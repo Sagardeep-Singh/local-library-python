@@ -1,4 +1,6 @@
 {% extends 'base_generic.html' %}
+{% load static %}
+
 {% block title %}
 <title>Home</title>
 {% endblock title %}
@@ -15,5 +17,6 @@
     <li><strong>Authors:</strong> {{ num_authors }}</li>
     <li><strong>Genres:</strong> {{ num_genres }}</li>
     <li><strong>Books with 'Harry' in Title:</strong> {{ num_books_harry }}</li>
+    <li class="mx-auto"><img  src='{% static 'images/logo.png' %}' width="150px" /></li>
 </ul>
 {% endblock %}
