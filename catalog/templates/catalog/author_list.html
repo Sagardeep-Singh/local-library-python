@@ -11,7 +11,7 @@
     <li>
         <a href="{{ author.get_absolute_url }}">{{ author.last_name }},
             {{ author.first_name }} ({{author.date_of_birth}} -
-            {{author.date_of_death|default:"Present"}}}</a>
+            {{author.date_of_death|default:"Present"}})</a>
     </li>
     {% endfor %}
 </ul>

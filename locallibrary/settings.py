@@ -26,7 +26,9 @@ SECRET_KEY = 'ncpe^k=pfwux5z=#$)3_a&e!lf3(&!r28f++t4%lsaru!di4ix'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'library.home.io'
+]
 
 
 # Application definition
