@@ -103,7 +103,7 @@ def renew_book_librarian(request, pk):
         # Check if the form is valid:
         if form.is_valid():
             # process the data in form.cleaned_data as required (here we just write it to the model due_back field)
-            book_instance.due_back = form.cleaned_data['renewal_date']
+            book_instance.due_back = form.cleaned_data['due_back']
             book_instance.save()
 
             # redirect to a new URL:
@@ -125,7 +125,6 @@ def renew_book_librarian(request, pk):
 class AuthorCreate(CreateView):
     model = Author
     fields = '__all__'
-    initial = {'date_of_death': '05/01/2018'}
 
 
 class AuthorUpdate(UpdateView):
@@ -136,3 +135,18 @@ class AuthorUpdate(UpdateView):
 class AuthorDelete(DeleteView):
     model = Author
     success_url = reverse_lazy('authors')
+
+
+class BookCreate(CreateView):
+    model = Book
+    fields = '__all__'
+
+
+class BookUpdate(UpdateView):
+    model = Book
+    fields = ['title','author','summary','isbn','genre','language']
+
+
+class BookDelete(DeleteView):
+    model = Book
+    success_url = reverse_lazy('books')
