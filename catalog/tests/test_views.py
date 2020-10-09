@@ -283,7 +283,7 @@ class RenewBookInstancesViewTest(TestCase):
         # Check that it lets us login. We're a librarian, so we can view any users book
         self.assertEqual(response.status_code, 200)
 
-    def test_HTTP404_for_invalid_book_if_logged_in(self):
+    def test_http404_for_invalid_book_if_logged_in(self):
         '''Testing that the user gets a 404 response if the book instance doesn't exist'''
         # unlikely UID to match our bookinstance!
         test_uid = uuid.uuid4()
@@ -309,7 +309,7 @@ class RenewBookInstancesViewTest(TestCase):
         self.client.login(
             username='testuser2', password='2HJ1vRV0Z&3iD')
         response = self.client.get(
-            reverse('renew-book-librarian', kwargs={'pk': self.test_bookinstance1.pk}),follow=True)
+            reverse('renew-book-librarian', kwargs={'pk': self.test_bookinstance1.pk}), follow=True)
         self.assertEqual(response.status_code, 200)
 
         date_3_weeks_in_future = datetime.date.today() + datetime.timedelta(weeks=3)
@@ -341,3 +341,61 @@ class RenewBookInstancesViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertFormError(response, 'form', 'due_back',
                              'Invalid date - renewal more than 4 weeks ahead')
+
+
+class AuthorCreateViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        # Create a user
+        test_user1 = User.objects.create_user(
+            username='testuser1', password='1X<ISRUkw+tuK')
+        test_user2 = User.objects.create_user(
+            username='testuser2', password='2HJ1vRV0Z&3iD')
+        test_user1.save()
+        test_user2.save()
+        permission = Permission.objects.get(name='Set book as returned')
+        test_user2.user_permissions.add(permission)
+        test_user2.save()
+
+    def test_redirect_if_not_logged_in(self):
+        '''Checking that the user is redirected to a login page if not logged in.'''
+        response = self.client.get(reverse('author_create'))
+        self.assertRedirects(
+            response, '/accounts/login/?next=/catalog/author/create/')
+
+    def test_redirect_if_logged_in_but_not_correct_permission(self):
+        '''Testing that forbidden response code is returned if the user doesn't have permission to renew a book instance'''
+        self.client.login(username='testuser1', password='1X<ISRUkw+tuK')
+        response = self.client.get(reverse('author_create'))
+        self.assertEqual(response.status_code, 403)
+
+    def test_logged_in_with_permission(self):
+        '''Testing the renew book view for a book assigned to the current user.'''
+        self.client.login(
+            username='testuser2', password='2HJ1vRV0Z&3iD')
+        response = self.client.get(reverse('author_create'))
+        # Check that it lets us login - this is our book and we have the right permissions.
+        self.assertEqual(response.status_code, 200)
+
+    def test_redirect_if_successfully_created_author(self):
+        self.client.login(
+            username='testuser2', password='2HJ1vRV0Z&3iD')
+        response = self.client.post(reverse('author_create'), {
+            'first_name': 'Test',
+            'last_name': 'User',
+            'date_of_birth': '2000-06-01',
+            'date_of_death': ''
+        })
+        author = Author.objects.first()
+        self.assertEqual(response.status_code,302)
+        self.assertRedirects(response,author.get_absolute_url())
+
+    def test_uses_correct_template(self):
+        '''Testing that correct template is used to renew a book instance.'''
+        self.client.login(
+            username='testuser2', password='2HJ1vRV0Z&3iD')
+        response = self.client.get(reverse('author_create'), follow=True)
+        self.assertEqual(response.status_code, 200)
+
+        # Check we used correct template
+        self.assertTemplateUsed(response, 'catalog/author_form.html')
