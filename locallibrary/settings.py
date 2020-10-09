@@ -24,9 +24,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'ncpe^k=pfwux5z=#$)3_a&e!lf3(&!r28f++t4%lsaru!di4ix'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
+    'localhost',
     'library.home.io'
 ]
 
