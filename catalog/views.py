@@ -50,6 +50,7 @@ def index(request):
 
 
 class BookListView(generic.ListView):
+    '''View to get a list of Books'''
     model = Book
     # your own name for the list as a template variable
     # queryset = Book.objects.filter(title__icontains='harry')[
@@ -58,15 +59,18 @@ class BookListView(generic.ListView):
 
 
 class BookDetailView(generic.DetailView):
+    '''View to get details of a book record'''
     model = Book
 
 
 class AuthorListView(generic.ListView):
+    '''View to get a list of Authors'''
     model = Author
     paginate_by = 10
 
 
 class AuthorDetailView(generic.DetailView):
+    '''View to display a list of authers'''
     model = Author
 
 
@@ -93,6 +97,7 @@ class LoanedBooksListView(PermissionRequiredMixin, generic.ListView):
 
 @permission_required('catalog.can_mark_returned')
 def renew_book_librarian(request, pk):
+    '''View to renew a book checked out to a user'''
     book_instance = get_object_or_404(BookInstance, pk=pk)
 
     # If this is a POST request then process the Form data
@@ -123,31 +128,43 @@ def renew_book_librarian(request, pk):
     return render(request, 'catalog/book_renew_librarian.html', context)
 
 
-class AuthorCreate(CreateView):
+class AuthorCreate(PermissionRequiredMixin, CreateView):
+    '''View to create an Author'''
     model = Author
     fields = '__all__'
+    permission_required = 'catalog.can_mark_returned'
 
 
-class AuthorUpdate(UpdateView):
+class AuthorUpdate(PermissionRequiredMixin, UpdateView):
+    '''View to update an Author'''
     model = Author
     fields = ['first_name', 'last_name', 'date_of_birth', 'date_of_death']
+    permission_required = 'catalog.can_mark_returned'
 
 
-class AuthorDelete(DeleteView):
+class AuthorDelete(PermissionRequiredMixin, DeleteView):
+    '''View to delete an Author'''
     model = Author
     success_url = reverse_lazy('authors')
+    permission_required = 'catalog.can_mark_returned'
 
 
-class BookCreate(CreateView):
+class BookCreate(PermissionRequiredMixin, CreateView):
+    '''View to create a Book'''
     model = Book
     fields = '__all__'
+    permission_required = 'catalog.can_mark_returned'
 
 
-class BookUpdate(UpdateView):
+class BookUpdate(PermissionRequiredMixin, UpdateView):
+    '''View to update a book'''
     model = Book
     fields = ['title', 'author', 'summary', 'isbn', 'genre', 'language']
+    permission_required = 'catalog.can_mark_returned'
 
 
-class BookDelete(DeleteView):
+class BookDelete(PermissionRequiredMixin, DeleteView):
+    '''View to delete a book'''
     model = Book
     success_url = reverse_lazy('books')
+    permission_required = 'catalog.can_mark_returned'
