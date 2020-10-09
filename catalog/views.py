@@ -1,18 +1,19 @@
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
 import datetime
-from catalog.models import Author
-from django.urls import reverse_lazy
-from catalog.forms import RenewBookModelForm
-from django.urls import reverse
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.decorators import permission_required
-from django.shortcuts import render
-from django.views import generic
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
+from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.mixins import (LoginRequiredMixin,
+                                        PermissionRequiredMixin)
+from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
+from django.urls import reverse, reverse_lazy
+from django.utils import timezone
+from django.views import generic
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
+
+from catalog.forms import RenewBookModelForm
 # Create your views here.
-from catalog.models import Book, Author, BookInstance, Genre
+from catalog.models import Author, Book, BookInstance, Genre, Language
 
 
 def index(request):
@@ -48,7 +49,7 @@ def index(request):
     return render(request, 'index.html', context=context)
 
 
-class BookListView(LoginRequiredMixin, generic.ListView):
+class BookListView(generic.ListView):
     model = Book
     # your own name for the list as a template variable
     # queryset = Book.objects.filter(title__icontains='harry')[
@@ -56,16 +57,16 @@ class BookListView(LoginRequiredMixin, generic.ListView):
     paginate_by = 10
 
 
-class BookDetailView(LoginRequiredMixin, generic.DetailView):
+class BookDetailView(generic.DetailView):
     model = Book
 
 
-class AuthorListView(LoginRequiredMixin, generic.ListView):
+class AuthorListView(generic.ListView):
     model = Author
     paginate_by = 10
 
 
-class AuthorDetailView(LoginRequiredMixin, generic.DetailView):
+class AuthorDetailView(generic.DetailView):
     model = Author
 
 
@@ -73,7 +74,7 @@ class LoanedBooksByUserListView(LoginRequiredMixin, generic.ListView):
     """ Generic class based view listing books on loan to current user."""
     model = BookInstance
     template_name = 'catalog/bookinstance_list_borrowed_user.html'
-    paginate_by = 15
+    paginate_by = 10
 
     def get_queryset(self):
         return BookInstance.objects.filter(borrower=self.request.user).filter(status__exact='o').order_by('due_back')
@@ -144,7 +145,7 @@ class BookCreate(CreateView):
 
 class BookUpdate(UpdateView):
     model = Book
-    fields = ['title','author','summary','isbn','genre','language']
+    fields = ['title', 'author', 'summary', 'isbn', 'genre', 'language']
 
 
 class BookDelete(DeleteView):
