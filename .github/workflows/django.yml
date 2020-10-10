@@ -25,10 +25,10 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        export SECRET_KEY='ncpe^k=pfwux5z=#$)3_a&e!lf3(&!r28f++t4%lsaru!di4ix'
-        export DATABASE_ENGINE=django.db.backends.sqlite3
-        export DATABASE_NAME=db.sqlite3
-        export DJANGO_DEBUG=False
+        echo 'SECRET_KEY='ncpe^k=pfwux5z=#$)3_a&e!lf3(&!r28f++t4%lsaru!di4ix' > .env
+        echo 'DATABASE_ENGINE=django.db.backends.sqlite3' >> .env
+        echo 'DATABASE_NAME=db.sqlite3' >> .env
+        echo 'DJANGO_DEBUG=False' >> .env
     - name: Run Tests
       run: |
         python manage.py test
