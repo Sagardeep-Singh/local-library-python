@@ -25,9 +25,14 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        export DATABASE_ENGINE=django.db.backends.sqlite3
-        export DATABASE_NAME=db.sqlite3
-        export DJANGO_DEBUG=False
+        =
+        DATABASE_NAME=db.sqlite3
+        DJANGO_DEBUG=False
     - name: Run Tests
+      env:
+        DATABASE_ENGINE: django.db.backends.sqlite3
+        DATABASE_NAME: db.sqlite3
+        DJANGO_DEBUG: False
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
       run: |
         python manage.py test
