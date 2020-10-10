@@ -30,7 +30,7 @@ DEBUG = os.environ.get('DJANGO_DEBUG', 'False') != 'False'
 
 ALLOWED_HOSTS = [
     'localhost',
-    os.environ.get("URL")
+    os.environ.get("HOST")
 ]
 
 
