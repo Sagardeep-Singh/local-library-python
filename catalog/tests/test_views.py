@@ -378,6 +378,7 @@ class AuthorCreateViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_redirect_if_successfully_created_author(self):
+        '''Testing if the user gets redirected correctly'''
         self.client.login(
             username='testuser2', password='2HJ1vRV0Z&3iD')
         response = self.client.post(reverse('author_create'), {
