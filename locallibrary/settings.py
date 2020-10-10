@@ -30,8 +30,7 @@ DEBUG = os.environ.get('DJANGO_DEBUG', 'False') != 'False'
 
 ALLOWED_HOSTS = [
     'localhost',
-    'library.home.io',
-    'shrouded-hollows-80534.herokuapp.com'
+    os.environ.get("URL")
 ]
 
 
